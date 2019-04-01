@@ -47,8 +47,16 @@ def main():
     # fringe_nodes.put((0, 0, ((-3, 0, 3), (-3, 1, 2)), None))
     # fringe_nodes.put((0, 0, ((-3, 0, 3), (-2, 0, 2)), None))
     # fringe_nodes.put((3, 0, ((-3, 0, 3),), None))
+
+
+    start_time = time.time()
+
     path = path_finder(goal)
     print("# Path: ", path)
+
+    end_time = time.time()
+
+    print("# Time taken: ", end_time - start_time)
     # node_expander(goal)
 
     # while not fringe_nodes.empty():
@@ -165,7 +173,7 @@ def heuristic(coords, goal):
     if num_pieces%2 == 0:
         h = math.ceil(total_distance/2) + minsum_separation + num_pieces
     else:
-        h = math.ceil(total_distance/2) + minsum_separation + num_pieces + min(piece_distances)
+        h = math.ceil(total_distance/2) + minsum_separation + num_pieces + math.floor(min(piece_distances)/2)
     # h = math.ceil(total_distance/2) + num_pieces
     # h = total_distance  # debug
     print("h= ", h)
@@ -280,7 +288,7 @@ def path_finder(goal):
 
     path_found = False
     # while time_limit(start_time, limit=5) is True:
-    while node_limit(current, limit=10) is True:
+    while node_limit(current, limit=50) is True:
         # run node_expander i number of times before checking time elapsed
         i = 1000
         while not fringe_nodes.empty() and i > 0 and (path_found is False or path_found[0] < min_f[0]):
