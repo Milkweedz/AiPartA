@@ -20,7 +20,7 @@ def main():
     # expected keys: colour (current piece colour), pieces (coords of pieces), blocks (coords of blocks)
     
     board.setup(data) 
-    print_board(board.get_board(), debug=True)
+    print_board(board.get_board())
 
 
 def print_board(board_dict, message="", debug=False, **kwargs):
