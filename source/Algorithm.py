@@ -176,7 +176,7 @@ def heuristic(coords, goal):
         h = math.ceil(total_distance/2) + minsum_separation + num_pieces + math.floor(min(piece_distances)/2)
     # h = math.ceil(total_distance/2) + num_pieces
     # h = total_distance  # debug
-    print("h= ", h)
+    ###########print("h= ", h)
     return h
 
 
@@ -266,8 +266,8 @@ def node_expander(goal):
 
             # f is estimated total path cost, h is predicted cost of remaining path, g is current path cost
             f = h + g
-            print(choice, state)
-            print(f, g, next_state)
+            #######print(choice, state)
+            ######## print(f, g, next_state)
             fringe_nodes.put((f, g + 1, next_state, state))
 
             if min_f[0] is None or f <= min_f[0]:
@@ -275,8 +275,9 @@ def node_expander(goal):
                 min_f[1] = next_state
 
         else:
-            print("# Already explored")
-            print("# ", stringified_next)
+            #######print("# Already explored")
+            ######## print("# ", stringified_next)
+            pass
 
     # goal has not been found
     return False
@@ -292,7 +293,7 @@ def path_finder(goal):
         # run node_expander i number of times before checking time elapsed
         i = 1000
         while not fringe_nodes.empty() and i > 0 and (path_found is False or path_found[0] < min_f[0]):
-            print("# Next node")
+            #########print("# Next node")
             path_found = node_expander(goal)
 
             if path_found is not False:

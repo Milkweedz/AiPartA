@@ -1,11 +1,11 @@
 import ast
 
 
-def tuple_to_string(tuple):
+def tuple_to_string(tupl):
     separator = ", "
     tuple_list = []
 
-    for element in tuple:
+    for element in tupl:
         tuple_list.append(str(element))
 
     string = "(" + separator.join(tuple_list) + ")"
@@ -14,5 +14,5 @@ def tuple_to_string(tuple):
 
 def string_to_tuple(string):
     # literal_eval takes a string and duck types it
-    tuple = ast.literal_eval(string)
-    return tuple
+    tupl = ast.literal_eval(string)
+    return tupl
