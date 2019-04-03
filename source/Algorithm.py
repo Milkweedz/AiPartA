@@ -51,8 +51,10 @@ def main():
 
     start_time = time.time()
 
-    path = path_finder(goal)
-    print("# Path: ", path)
+    move = get_next_move()
+    # path = path_finder(goal)
+    # print("# Path: ", path)
+    print("# Move: ", move)
 
     end_time = time.time()
 
@@ -63,6 +65,14 @@ def main():
     #     print(fringe_nodes.get())
 
     return None
+
+
+def get_next_move():
+    goal = (q, 3)
+    path = path_finder(goal)
+    print(path[0])
+
+    return path[0]
 
 
 # coords is a list of 1 to 4 coordinate tuples of pieces
