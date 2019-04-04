@@ -18,9 +18,9 @@ def gen_valid_move_norms(dist):
 # takes an beginning hex, a destination, and outputs them correctly
 def move_to(method, src, dst="????"):
     if method == EXIT:
-        return "{} from {}".format(EXIT, src)
+        return "{} from {}.".format(EXIT, src)
     else:
-        return "{} from {} to {}".format(method, src, dst)
+        return "{} from {} to {}.".format(method, src, dst)
     print("Error, invalid move formatting!")
     return
 
@@ -30,6 +30,9 @@ def determine_move(init_coords, end_coords):
     # treats the coordinate lists as sets, uses difference to find the elements that are in one but not the other
     checker=list(set(init_coords)-set(end_coords))+list(set(end_coords)-set(init_coords))
 
+    checker = [Formatting.tuple2throuple(Formatting.string_to_tuple(x)) for x in checker]
+
+    # arguments for the move function at the end. will be changed according to inputs
     move_command = None
     source_coord = checker[0]
     destin_coord = None
@@ -46,15 +49,22 @@ def determine_move(init_coords, end_coords):
         move_command = EXIT
     else:
         destin_coord = checker[1]
-        #then, determine if a jump or walk. compares the difference of the x and y values of each tuple, and creates a single-element list of either 1|2
-        comps = [x-y for x in Formatting.string_to_tuple(checker[0]) for y in Formatting.string_to_tuple(checker[1]) if x-y!=0]
-        #this is not completely correct!!!!!!
-        if abs(comps[0]) ==2:
+        
+        #now determines if it is a jump, or a move
+        if valid_move(2, source_coord, destin_coord):
             move_command = JUMP
-        else:
+        elif valid_move(1, source_coord,destin_coord):
             move_command = MOVE
+        else:
+            print("ERROR in checking valid move!")
+            print(source_coord)
+            print(destin_coord)
+            return
 
-    return move_to(move_command, source_coord, destin_coord)
+    # returns 3-tuple to 2-tuple.
+    return move_to(move_command, source_coord[:2], destin_coord[:2])
 
-print(move_to("here", "there", MOVE))
+# checks if a particular move dist away is a valid move to dest coord
+def valid_move(dist, coord1, coord2):
+    return bool(Formatting.tuple_dif(coord1, coord2) in gen_valid_move_norms(dist)) 
 
