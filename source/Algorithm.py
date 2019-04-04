@@ -138,12 +138,12 @@ def heuristic(coords, goal):
                 if x not in set(tuple(itertools.chain.from_iterable(combinations[i]))):
                     odd_piece.append(coords[x])
 
-    for piece_pair in piece_pairs:
-        (p1, p2) = piece_pair
-        intersection_x = min([coords[p1][axes[0]], coords[p2][axes[0]]], key=lambda x: abs(-goal_value - x))
-        intersection_y = min([coords[p1][axes[1]], coords[p2][axes[1]]], key=lambda x: abs(-goal_value - x))
-        intersection_goal_axis_val = - intersection_x - intersection_y
-        # future implementation
+    # future implementation
+    # for piece_pair in piece_pairs:
+    #     (p1, p2) = piece_pair
+    #     intersection_x = min([coords[p1][axes[0]], coords[p2][axes[0]]], key=lambda x: abs(-goal_value - x))
+    #     intersection_y = min([coords[p1][axes[1]], coords[p2][axes[1]]], key=lambda x: abs(-goal_value - x))
+    #     intersection_goal_axis_val = - intersection_x - intersection_y
         # num_jumps_array.append(abs(goal_value - intersection_goal_axis_val))
 
     # future implementation of estimation for jumping for odd pieces. currently assume odd pieces can always jump
@@ -178,10 +178,7 @@ def heuristic(coords, goal):
     # h = total_distance + num_pieces - num_jumps
 
     # modifier on heuristic value "h(n)"
-    if num_pieces%2 == 0:
-        h = math.ceil(total_distance/2) + minsum_separation + num_pieces
-    else:
-        h = math.ceil(total_distance/2) + minsum_separation + num_pieces + math.floor(min(piece_distances)/2)
+    h = math.ceil(total_distance/2) + minsum_separation + num_pieces
 
     return h
 
