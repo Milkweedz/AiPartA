@@ -8,6 +8,7 @@ Authors:
 import sys
 import json
 import board
+import output
 
 def main():
     with open(sys.argv[1]) as file:
@@ -16,11 +17,24 @@ def main():
     # TODO: Search for and output winning sequence of moves
     # ...
    
+    test1 = [1, 2, 3, 5]
+    test2 = [1, 2, 3, 4]
+
+    print(test1)
+    print(test2)
+    print(list(set(test1)-set(test2))+list(set(test2)-set(test1)))
+
+    print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
+
 
     # expected keys: colour (current piece colour), pieces (coords of pieces), blocks (coords of blocks)
     
     board.setup(data) 
     print_board(board.get_board(), debug=True)
+
+    print(output.gen_valid_move_norms(3))
+
+    
 
 
 def print_board(board_dict, message="", debug=False, **kwargs):
@@ -103,6 +117,8 @@ def print_board(board_dict, message="", debug=False, **kwargs):
     # fill in the template to create the board drawing, then print!
     board = template.format(message, *cells)
     print(board, **kwargs)
+
+    
 
 
 # when this module is executed, run the `main` function:

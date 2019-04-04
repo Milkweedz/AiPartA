@@ -16,3 +16,4 @@ def string_to_tuple(string):
     # literal_eval takes a string and duck types it
     tupl = ast.literal_eval(string)
     return tupl
+
