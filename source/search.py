@@ -10,6 +10,7 @@ import json
 import board
 import output
 import Formatting
+import Algorithm
 
 def main():
     with open(sys.argv[1]) as file:
@@ -18,12 +19,13 @@ def main():
     # TODO: Search for and output winning sequence of moves
     # ...
     
-    board.setup(data) 
+    board.setup(data)
+
 
     print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
 
 
-    
+    print(Algorithm.get_next_move())
 
 
 def print_board(board_dict, message="", debug=False, **kwargs):
