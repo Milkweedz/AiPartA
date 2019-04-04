@@ -22,6 +22,7 @@ matrix_size = board_radius * 2 + 1
 board_matrix = [[None for x in range(matrix_size)] for y in range(matrix_size)]
 
 
+# main used to debug Algorithm.py, not called in actual use
 def main():
     global board, board_matrix, explored_states, fringe_nodes
     # board key: coordinate tuple, data: piece color
@@ -51,18 +52,32 @@ def main():
 
     start_time = time.time()
 
-    path = path_finder(goal)
-    print("# Path: ", path)
+    # path = path_finder(goal)
+    # print("# Path: ", path)
+
+    # simulated get_next_move input
+    get_next_move({"(-3, 0, 3)":"r", "(-3, 1, 2)":"r", "(-3, 2, 1)":"r", "(-3, 3, 0)":"r",
+                   "(-2, -1, 3)": "block", "(-2, 0, 2)": "block", "(-2, 1, 1)": "block",
+                   "(-1, -1, 2)": "block", "(-1, 0, 1)": "block", "(-1, 1, 0)": "block"},
+                  ((-3, 0, 3), (-3, 1, 2), (-3, 2, 1), (-3, 3, 0)),
+                  (q, 3))
 
     end_time = time.time()
 
     print("# Time taken: ", end_time - start_time)
-    # node_expander(goal)
-
-    # while not fringe_nodes.empty():
-    #     print(fringe_nodes.get())
 
     return None
+
+
+def get_next_move(board_input, my_pieces, goal):
+    global board, board_matrix, explored_states, fringe_nodes
+    board = board_input
+    board_matrix = dict_to_matrix(board)
+    fringe_nodes.put((0, 0, my_pieces, None))
+    path = path_finder(goal)
+    print("# Next Move: ", path[1])
+
+    return path[1]
 
 
 # coords is a list of 1 to 4 coordinate tuples of pieces
@@ -135,48 +150,14 @@ def heuristic(coords, goal):
     #                  for p2 in range(len(piece_separation))if p2 not in [p1]]
     #                 for p1 in range(len(piece_separation))]
 
-    # combinations = [[piece_separation[p1][p2]
-    #                  for p2 in range(len(piece_separation)) if piece_separation[p1][p2] is not None and p2 != p1]
-    #                 for p1 in range(len(piece_separation))]
-
-    # flatten_combinations = combinations
-    # for i in range(1):
-    #     flatten_combinations = list(itertools.chain.from_iterable(flatten_combinations))
-    #
-    # minsum_separation = min(flatten_combinations)
-
-    if len(sum_separations) == 0:
-        minsum_separation = 0
-    else:
-        minsum_separation = min(sum_separations)
-
-    # for i in range(len(piece_separation)):
-    #     for j in range(len(piece_separation[i])):
-    #         if i != j and piece_separation[i][j] is not None:
-    #             for k in range(len(piece_separation)):
-    #                 for l in range(len(piece_separation[k])):
-
-    # group every 2 pieces together and have them continually jump over each other to goal
-    # sum the pair separations of every combination of n pairs of pieces, where n is half of number of pieces (floored)
-    # returned as tuple
-    # print("GOOSE", piece_separation)
-    # combinations = tuple(itertools.combinations(piece_separation, math.floor(num_pieces/2)))
-    # for x in combinations:
-    #     print(x)
-    # sum_separation = map(sum, combinations)
-    # print(min(sum_separation), "DEBUG DUCK")
-
-    # # modifier on heuristic value "h(n)"
-    # h = total_distance * 1/2 # set to 1/2 to account for pieces moving 2 squares by jumping
+    # h = total_distance + num_pieces - num_jumps
 
     # modifier on heuristic value "h(n)"
     if num_pieces%2 == 0:
         h = math.ceil(total_distance/2) + minsum_separation + num_pieces
     else:
         h = math.ceil(total_distance/2) + minsum_separation + num_pieces + math.floor(min(piece_distances)/2)
-    # h = math.ceil(total_distance/2) + num_pieces
-    # h = total_distance  # debug
-    print("h= ", h)
+
     return h
 
 
@@ -266,8 +247,6 @@ def node_expander(goal):
 
             # f is estimated total path cost, h is predicted cost of remaining path, g is current path cost
             f = h + g
-            print(choice, state)
-            print(f, g, next_state)
             fringe_nodes.put((f, g + 1, next_state, state))
 
             if min_f[0] is None or f <= min_f[0]:
@@ -275,8 +254,7 @@ def node_expander(goal):
                 min_f[1] = next_state
 
         else:
-            print("# Already explored")
-            print("# ", stringified_next)
+            pass
 
     # goal has not been found
     return False
@@ -287,12 +265,11 @@ def path_finder(goal):
     start_time = time.time()            # keep track of time resource
 
     path_found = False
-    # while time_limit(start_time, limit=5) is True:
-    while node_limit(current, limit=50) is True:
+    while time_limit(start_time, limit=25) is True:
+    # while node_limit(current, limit=50) is True:
         # run node_expander i number of times before checking time elapsed
         i = 1000
         while not fringe_nodes.empty() and i > 0 and (path_found is False or path_found[0] < min_f[0]):
-            print("# Next node")
             path_found = node_expander(goal)
 
             if path_found is not False:
@@ -322,13 +299,11 @@ def dict_to_matrix(board):
     keys = board.keys()
 
     for key in keys:
-        print(key, "DEBUG")
         coord = Formatting.string_to_tuple(key)
         q, r, s = coord
 
         board_matrix[q][r] = board[key]
 
-    print(board_matrix)
     return board_matrix
 
 
@@ -341,7 +316,7 @@ def node_limit(current, limit):
 
 def time_limit(start_time, limit):
     if (time.time() - start_time) >= limit:
-        print("# TIME: ", time.time()-start_time)
+        print("# Time Elapsed: ", time.time()-start_time)
         return False
     else:
         return True
