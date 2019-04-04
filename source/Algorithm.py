@@ -85,12 +85,17 @@ def get_next_move(board_input, my_pieces, goal):
 # goal is single tuple consisting of 2 elements: axis (i.e. q,r,s) and value (i.e. -3,3)
 def heuristic(coords, goal):
     global board_matrix, q, r, s
+    axes = [q, r, s]
     num_pieces = len(coords)
     # num_pairs = (num_pieces * (num_pieces-1))/2
     combinations = []       # combinations of pairs of pieces
     sum_separations = []    # sum of separations of pairs of pieces
-    axes = [q, r, s]
+    odd_piece = []          # unpaired piece in situations where there are odd number of pieces
     piece_distances = []      # sum of shortest distances between pieces and their goal
+    # blocks_goal_axis_coords = []
+    # block_discount = []
+    # num_jumps_array = []
+    # num_jumps = 0
     goal_axis = goal[0]     # axis perpendicular to the side our pieces have to move to
     goal_value = goal[1]    # either -n or n, where n is the radius of the hexagonal board
     #   distinguishes between the two sides perpendicular to the goal_axis
@@ -129,8 +134,25 @@ def heuristic(coords, goal):
     if len(combinations) == 0:
         for i in range(len(piece_pairs)):
             combinations.append([piece_pairs[i]])
+            for x in range(num_pieces):
+                if x not in set(tuple(itertools.chain.from_iterable(combinations[i]))):
+                    odd_piece.append(coords[x])
 
-    # combinations = list(itertools.combinations(piece_pairs, int(num_pieces/2)))
+    for piece_pair in piece_pairs:
+        (p1, p2) = piece_pair
+        intersection_x = min([coords[p1][axes[0]], coords[p2][axes[0]]], key=lambda x: abs(-goal_value - x))
+        intersection_y = min([coords[p1][axes[1]], coords[p2][axes[1]]], key=lambda x: abs(-goal_value - x))
+        intersection_goal_axis_val = - intersection_x - intersection_y
+        # future implementation
+        # num_jumps_array.append(abs(goal_value - intersection_goal_axis_val))
+
+    # future implementation of estimation for jumping for odd pieces. currently assume odd pieces can always jump
+    # jumps = []
+    # for odd in odd_piece:
+    #     piece_distance = abs(odd[goal_axis] - goal_value)
+    #     jumps.append(math.floor(piece_distance / 2))
+    # if len(jumps) > 0:
+    #     num_jumps_array = list(map(operator.add, num_jumps_array, jumps))
 
     for i in range(len(combinations)):
         sum_separation = 0
@@ -142,13 +164,16 @@ def heuristic(coords, goal):
             sum_separation += separation
         sum_separations.append(sum_separation)
 
-    # combinations = [[[[piece_separation[p1][p2] + piece_separation[p3][p4]
-    #                    for p4 in range(len(piece_separation))if piece_separation[p1][p2] is not None
-    #                    and piece_separation[p3][p4] is not None
-    #                    and p4 not in [p3, p2, p1]]
-    #                   for p3 in range(len(piece_separation)) if p3 not in [p2, p1]]
-    #                  for p2 in range(len(piece_separation))if p2 not in [p1]]
-    #                 for p1 in range(len(piece_separation))]
+    if len(sum_separations) > 0:
+        minsum_separation = min(sum_separations)
+    else:
+        minsum_separation = 0
+
+    # some code for future implementation of num_jumps
+    # for i in range(len(sum_separations)):
+    #     if minsum_separation is None or sum_separations[i] < minsum_separation:
+    #         minsum_separation = sum_separations[i]
+    #         num_jumps = minsum_separation + num_jumps_array[i]
 
     # h = total_distance + num_pieces - num_jumps
 
