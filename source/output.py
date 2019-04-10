@@ -12,25 +12,30 @@ JUMP = "JUMP"
 EXIT = "EXIT"
 NONE = "NONE"
 
+PLCHOLDER = "????"
+
 def gen_valid_move_norms(dist):
     ran = range(-dist,dist+1)
     # list comprehension to generate valid jumps from (0,0,0)
     return [(q,r,s) for q in ran for r in ran for s in ran if q+r+s==0 and (dist in(q,r,s)or-dist in(q,r,s))]
 
 # takes an beginning hex, a destination, and outputs them correctly
-def move_to(method, src, dst="????"):
+def move_to(method, src, dst=PLCHOLDER):
     if method == EXIT:
-        return "{} from {}.".format(EXIT, src)
+        print("{} from {}.".format(EXIT, src))
     else:
-        return "{} from {} to {}.".format(method, src, dst)
-    print("Error, invalid move formatting!")
-    return
+        print("{} from {} to {}.".format(method, src, dst))
+    # this method is not very python but I've only got so many hours left
+    returnlist = [src]
+    if (dst != PLCHOLDER):
+        returnlist.append(dst)
+    return returnlist
 
 # from the change in coordinates, determines if the move is a jump, move, or exit
 def determine_move(init_coords, end_coords):
 
     end_coords = Formatting.string_to_tuple(end_coords)
-    print(type(end_coords))
+   #### print(type(end_coords))
 
     # just in case the coords are passed as a tuple
     if type(init_coords) is tuple:
@@ -41,16 +46,16 @@ def determine_move(init_coords, end_coords):
     
     # treats the coordinate lists as sets, uses difference to find the elements that are in one but not the other
     checker=list(set(init_coords)-set(end_coords))+list(set(end_coords)-set(init_coords))
-    print("Coords: ")
-    print(init_coords)
-    print(end_coords)
+    #####print("Coords: ")
+   ### print(init_coords)
+   ### print(end_coords)
 
     # clean up list, idk where these errors are coming from atm
     checker = [x for x in checker if type(x) is tuple]
-    print(checker)
+    ###print(checker)
     # checking for type is hugely not the greatest thing
     checker = [convert(x) for x in checker if type(x) is tuple]
-    print(checker)
+   ### print(checker)
 
     # arguments for the move function at the end. will be changed according to inputs
     move_command = None

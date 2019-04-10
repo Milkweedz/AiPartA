@@ -25,10 +25,16 @@ def main():
     colour = data.get(COLOUR_KEY)
 
     board.setup(data)
-    print(board.get_col_coord_tuple("red"))
+    print("# Colour is {}, coords at {}".format(colour, board.get_col_coord_tuple("red")))
+    print("# Initial board:")
+    print_board(board.get_board(), debug=True)
+
+    while(1):
     
-    temp_path = Algorithm.get_next_move(board.get_col_coord_dict(colour), board.get_col_coord_tuple("red"), (0,3))
-    print(output.determine_move(board.get_col_coord_tuple("red"), temp_path))
+        temp_path = Algorithm.get_next_move(board.get_col_coord_dict(colour), board.get_col_coord_tuple("red"), (0,3))
+        coords = output.determine_move(board.get_col_coord_tuple("red"), temp_path)
+        board.update_piece(coords)
+        print_board(board.get_board(), debug=True)
 
     # print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
 

@@ -52,7 +52,15 @@ def get_col_coord_dict(colour):
                         new_dict[Formatting.convert(coord)]=colour
         return new_dict
 
-    
+# changes pieces on the board, or removes them
+def update_piece(coords):
+        if len(coords) > 2:
+                print("OH WHOOPS YA GOT AN ERROR")
+        if len(coords)== 2:
+                val = board_dict[coords[0]]
+                board_dict[coords[1]] = val
+        board_dict[coords[0]] = BLANK_SPACE
+        
 
 def get_board():
     return board_dict

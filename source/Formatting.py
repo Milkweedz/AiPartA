@@ -29,7 +29,7 @@ def tuple_dif(t1, t2):
 def tuple2throuple(t):
     if len(t) >2:
         return t
-    print("{} is {}".format(t, type(t)))
+   ### print("{} is {}".format(t, type(t)))
     return (*t,-(t[0]+t[1]))
 
 def throuple2tuple(t):
