@@ -10,6 +10,9 @@ import json
 import board
 import output
 import Formatting
+import Algorithm
+
+COLOUR_KEY = "colour"
 
 def main():
     with open(sys.argv[1]) as file:
@@ -18,9 +21,18 @@ def main():
     # TODO: Search for and output winning sequence of moves
     # ...
     
-    board.setup(data) 
+    # make sure we know what colour we are
+    colour = data.get(COLOUR_KEY)
 
-    print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
+    board.setup(data)
+    print(board.get_col_coord_tuple("red"))
+    
+    temp_path = Algorithm.get_next_move(board.get_col_coord_dict(colour), board.get_col_coord_tuple("red"), (0,3))
+    print(output.determine_move(board.get_col_coord_tuple("red"), temp_path))
+
+    # print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
+
+
 
 
     

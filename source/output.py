@@ -5,6 +5,8 @@ Formats directions for the next step as necessary
 
 import Formatting
 
+from Formatting import convert
+
 MOVE = "MOVE"
 JUMP = "JUMP"
 EXIT = "EXIT"
@@ -26,11 +28,29 @@ def move_to(method, src, dst="????"):
 
 # from the change in coordinates, determines if the move is a jump, move, or exit
 def determine_move(init_coords, end_coords):
+
+    end_coords = Formatting.string_to_tuple(end_coords)
+    print(type(end_coords))
+
+    # just in case the coords are passed as a tuple
+    if type(init_coords) is tuple:
+        init_coords = list(init_coords)
+    if type(end_coords) is tuple:
+        end_coords = list(end_coords)
+        
     
     # treats the coordinate lists as sets, uses difference to find the elements that are in one but not the other
     checker=list(set(init_coords)-set(end_coords))+list(set(end_coords)-set(init_coords))
+    print("Coords: ")
+    print(init_coords)
+    print(end_coords)
 
-    checker = [Formatting.tuple2throuple(Formatting.string_to_tuple(x)) for x in checker]
+    # clean up list, idk where these errors are coming from atm
+    checker = [x for x in checker if type(x) is tuple]
+    print(checker)
+    # checking for type is hugely not the greatest thing
+    checker = [convert(x) for x in checker if type(x) is tuple]
+    print(checker)
 
     # arguments for the move function at the end. will be changed according to inputs
     move_command = None
@@ -40,6 +60,7 @@ def determine_move(init_coords, end_coords):
     #error handling
     if len(checker)<=0 or len(checker)>2:
         print(checker)
+        print(len(checker))
         print("ERROR: Invalid coordinate entry!")
         return
 

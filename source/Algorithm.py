@@ -288,7 +288,7 @@ def path_finder(goal):
     start_time = time.time()            # keep track of time resource
 
     path_found = False
-    while time_limit(start_time, limit=25) is True:
+    while time_limit(start_time, limit=25) is True and path_found is False :
     # while node_limit(current, limit=50) is True:
         # run node_expander i number of times before checking time elapsed
         i = 1000
