@@ -58,17 +58,22 @@ def get_col_coord_dict(colour):
 # changes pieces on the board, or removes them
 def update_piece(coords):
         dprint(type(coords))
+        dprint(len(coords))
         for x in coords:
                 dprint(type(x))
         # just in case, converting from 3-tuple to 2-tuple
-        coords = [map(Formatting.throuple2tuple, coords)]
+        coords = list(map(Formatting.throuple2tuple, coords))
+        dprint(coords)
         if len(coords) > 2:
                 print("OH WHOOPS YA GOT AN ERROR")
         if len(coords)== 2:
                 val = board_dict[coords[0]]
                 board_dict[coords[1]] = val
+                dprint("new: {}".format(board_dict[coords[1]]))
         # if the piece exits, it just disappears
         board_dict[coords[0]] = BLANK_SPACE
+        dprint("original: {}".format(board_dict[coords[0]]))
+        
         
 
 def get_board():

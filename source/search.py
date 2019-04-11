@@ -24,15 +24,22 @@ def main():
     # ...
 
     board.setup(data)
+    print_board(board.get_board(), debug=True)
 
     ####print(astar.find_short_path((0,3,-3), (1,-3,2)))
     ####print(astar.dist((0,3,-3), (3,-2,-1)))
 
-    next_coords = astar.find_next_step(board.get_board(), "red")
-    dprint("# next coords: {}".format(next_coords))
+    
 
-    output.move_to("MOVE", next_coords[0], next_coords[1])
-    board.update_piece(next_coords)
+    while len(board.get_col_coord_dict("red"))>0:
+        next_coords = astar.find_next_step(board.get_board(), "red")
+        dprint("# next coords: {}".format(next_coords))
+
+        output.det_move(next_coords)
+        board.update_piece(next_coords)
+
+        print_board(board.get_board(), debug=True)
+
     
     # make sure we know what colour we are
     """

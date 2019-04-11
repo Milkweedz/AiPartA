@@ -4,6 +4,7 @@ from util import *
 from output import gen_valid_move_norms
 from Formatting import *
 from sys import exit
+import copy
 
 # these are generated once instead of multiple times, saving time
 moves_1 = gen_valid_move_norms(1)
@@ -31,8 +32,14 @@ def find_next_step(board_dict, player_col):
     coord_pair = min_dist_coords(player_pieces, goal_spaces)
     dprint("# selected piece, goal position: {}".format(coord_pair))
     
-    # remember to insert the initial piece at the front to know which one moves
-    return [coord_pair[0], find_short_path(coord_pair[0], coord_pair[1])[0]]
+
+
+    path = find_short_path(coord_pair[0], coord_pair[1])
+    if len(path)>0:
+        # the next step to take is the first element in the path
+        return [coord_pair[0], path[0]]
+    else: 
+        return [coord_pair[0]]
 
 """
 find_short_path
@@ -52,13 +59,17 @@ def find_short_path(c1, c2, explored=[], short_path = []):
     # recursive function, so if reached our goal, return
     if c1==c2:
         dprint("# short path found: {}".format(short_path))
-        return short_path
+        explored.clear()
+        fin_path = copy.deepcopy(short_path)
+        short_path.clear()
+        return fin_path
 
     # explore all six hexes around, avoiding ones we have already dealt with
     # and marking them as explored
     potential_moves = [tuple_add(c1, x) for x in moves_1 if tuple_add(c1, x) not in explored and tuple_add(c1, x) in BOARD_COORDS] 
     explored.extend(potential_moves)
     dprint("# potential moves: {}".format(potential_moves))
+    dprint("explored: {}".format(explored))
     # distances is the subtraction of each tuple in potential_moves from the goal
     # we want to find the smallest distance posible
     distances = [tuple_dif(x, c2) for x in potential_moves]
@@ -106,7 +117,7 @@ def min_dist_coords(piece_list, goal_list):
     # maps each pair to a distance between them
     dprint("piece list, goal list: {}, {}".format(piece_list, goal_list))
     distance_map = [(x, y, dist(x, y)) for x in piece_list for y in goal_list]
-    print("# distance maps:")
+    dprint("# distance maps:")
     dlprint(distance_map)
     # finds the piece-goal pair with the smallest distance
     min_dist = min(x[2] for x in distance_map)

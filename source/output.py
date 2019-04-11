@@ -6,6 +6,7 @@ Formats directions for the next step as necessary
 
 
 from Formatting import convert, string_to_tuple, tuple_dif
+from sys import exit
 
 MOVE = "MOVE"
 JUMP = "JUMP"
@@ -20,7 +21,9 @@ def gen_valid_move_norms(dist):
     return [(q,r,s) for q in ran for r in ran for s in ran if q+r+s==0 and (dist in(q,r,s)or-dist in(q,r,s))]
 
 # takes an beginning hex, a destination, and outputs them correctly
-def move_to(method, src, dst=PLCHOLDER):
+def move_to(method, coords):
+    src = coords[0]
+    dst = PLCHOLDER if len(coords)!=2 else coords[1]
     if method == EXIT:
         print("{} from {}.".format(EXIT, src))
     else:
@@ -32,7 +35,49 @@ def move_to(method, src, dst=PLCHOLDER):
     return returnlist
 
 # from the change in coordinates, determines if the move is a jump, move, or exit
-def determine_move(init_coords, end_coords):
+def det_move(coords):
+    move_command = None
+    source_coord = coords[0]
+    destin_coord = None
+
+    #error handling
+    if len(coords)<=0 or len(coords)>2:
+        print(coords)
+        print(len(coords))
+        print("ERROR: Invalid coordinate entry!")
+        exit()
+        return
+
+    #first, if there is only one element, an exit has been made
+    if len(coords)==1:
+        print("length of 1")
+        move_command = EXIT
+    else:
+        destin_coord = coords[1]
+        
+        #now determines if it is a jump, or a move
+        if valid_move(2, source_coord, destin_coord):
+            move_command = JUMP
+        elif valid_move(1, source_coord,destin_coord):
+            move_command = MOVE
+        else:
+            print("ERROR, not a valid move!")
+            print(source_coord)
+            print(destin_coord)
+            exit()
+            return
+    
+    if destin_coord is None:
+        return move_to(move_command, [source_coord[:2]])
+
+    # returns 3-tuple to 2-tuple.
+    return move_to(move_command, [source_coord[:2], destin_coord[:2]])
+
+
+# from the change in coordinates, determines if the move is a jump, move, or exit
+def determine_move(coords):
+    init_coords = list(coords[0])
+    end_coords = list(coords[1])
 
     end_coords = string_to_tuple(end_coords)
    #### print(type(end_coords))
@@ -88,7 +133,7 @@ def determine_move(init_coords, end_coords):
             return
 
     # returns 3-tuple to 2-tuple.
-    return move_to(move_command, source_coord[:2], destin_coord[:2])
+    return move_to(move_command, [source_coord[:2], destin_coord[:2]])
 
 # checks if a particular move dist away is a valid move to dest coord
 def valid_move(dist, coord1, coord2):
