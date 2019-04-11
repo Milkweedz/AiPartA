@@ -3,9 +3,9 @@ Formats directions for the next step as necessary
 
 """
 
-import Formatting
 
-from Formatting import convert
+
+from Formatting import convert, string_to_tuple, tuple_dif
 
 MOVE = "MOVE"
 JUMP = "JUMP"
@@ -34,7 +34,7 @@ def move_to(method, src, dst=PLCHOLDER):
 # from the change in coordinates, determines if the move is a jump, move, or exit
 def determine_move(init_coords, end_coords):
 
-    end_coords = Formatting.string_to_tuple(end_coords)
+    end_coords = string_to_tuple(end_coords)
    #### print(type(end_coords))
 
     # just in case the coords are passed as a tuple
@@ -92,5 +92,5 @@ def determine_move(init_coords, end_coords):
 
 # checks if a particular move dist away is a valid move to dest coord
 def valid_move(dist, coord1, coord2):
-    return bool(Formatting.tuple_dif(coord1, coord2) in gen_valid_move_norms(dist)) 
+    return bool(tuple_dif(coord1, coord2) in gen_valid_move_norms(dist)) 
 

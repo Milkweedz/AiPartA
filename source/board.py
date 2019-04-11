@@ -7,6 +7,7 @@ BLOCKS_KEY = "blocks"
 BLOCKS_STR = "[=]"
 
 import Formatting
+from search import dprint
 
 board_dict = {}
 #colour = ""
@@ -22,11 +23,13 @@ def init():
 # initialises board based on json data
 def setup(jsondata):
     init()
-    print(jsondata.keys())
+    dprint(jsondata.keys())
     colour = jsondata.pop(COLOUR_KEY)
     # read through file, add corresponding values to dictionary
     for key in jsondata.keys():
         for i in jsondata[key]:
+            dprint(type(i))
+            dprint(type(tuple(i)))
             assign_to_board(key, tuple(i), colour)
 
 # takes a key-value pair from json and adds it to board dictionary    
@@ -54,11 +57,17 @@ def get_col_coord_dict(colour):
 
 # changes pieces on the board, or removes them
 def update_piece(coords):
+        dprint(type(coords))
+        for x in coords:
+                dprint(type(x))
+        # just in case, converting from 3-tuple to 2-tuple
+        coords = [map(Formatting.throuple2tuple, coords)]
         if len(coords) > 2:
                 print("OH WHOOPS YA GOT AN ERROR")
         if len(coords)== 2:
                 val = board_dict[coords[0]]
                 board_dict[coords[1]] = val
+        # if the piece exits, it just disappears
         board_dict[coords[0]] = BLANK_SPACE
         
 

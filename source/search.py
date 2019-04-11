@@ -9,18 +9,12 @@ import sys
 import json
 import board
 import output
-import Formatting
 import Algorithm
+from util import dprint
 
 import astar
 
 COLOUR_KEY = "colour"
-
-RED = "red"
-BLU = "blue"
-GRN = "green"
-
-DEBUG = True
 
 def main():
     with open(sys.argv[1]) as file:
@@ -60,17 +54,7 @@ def main():
     # print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
 
 
-# debug printer
-def dprint(s):
-    if DEBUG:
-        print("# {}".format(s))
-    return
 
-def dlprint(s):
-    if DEBUG:
-        print(*s,sep='\n')
-    return
-    
 
 
 def print_board(board_dict, message="", debug=False, **kwargs):

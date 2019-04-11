@@ -1,6 +1,6 @@
 # Uses the a* algorithm in a given set of nodes to find the optimal path
 
-from search import RED, BLU, GRN, dprint, dlprint
+from util import *
 from output import gen_valid_move_norms
 from Formatting import *
 from sys import exit
