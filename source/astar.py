@@ -4,7 +4,9 @@ from util import *
 from output import gen_valid_move_norms
 from Formatting import *
 from sys import exit
+
 import copy
+
 
 # these are generated once instead of multiple times, saving time
 moves_1 = gen_valid_move_norms(1)
@@ -12,11 +14,12 @@ moves_2 = gen_valid_move_norms(2)
 BOARD_COORDS = moves_1+moves_2+gen_valid_move_norms(3)
 
 
-
-# receive input. Will need to know (blank spaces, spaces with our pieces, spaces with blocks)
-# so this will be just passing the board dictionary to here.
-# param: board_dict is a dictionary of the board, with coordinates as keys and blank,colour,block as values
-# player_col is the current player's colour
+"""
+receive input. We need to know blank spaces, spaces with our pieces, and spaces with blocks
+so this will be just passing the board dictionary to here.
+param: board_dict -> is a dictionary of the board, with coordinates as keys and blank,colour,block as values
+param: player_col -> is the current player's colour
+"""
 def find_next_step(board_dict, player_col):
     goal_spaces = gen_goal_space(player_col)
     # coordinates of current player pieces
@@ -41,8 +44,8 @@ def find_next_step(board_dict, player_col):
     else: 
         return [coord_pair[0]]
 
+
 """
-find_short_path
 finds shortest path between two hexes with no obstacles
 returns an ordered list of coordinates, which are the moves to reach goal
 if the goal is reached, returns an empty list
@@ -60,27 +63,34 @@ def find_short_path(c1, c2, explored=[], short_path = []):
     if c1==c2:
         dprint("# short path found: {}".format(short_path))
         explored.clear()
+        # apparently the list stays the same in python after it's returned, so to clear it each time we have to use some janky code
         fin_path = copy.deepcopy(short_path)
         short_path.clear()
         return fin_path
 
     # explore all six hexes around, avoiding ones we have already dealt with
-    # and marking them as explored
+    # and marking them as explored, as long as they are within the boardS
     potential_moves = [tuple_add(c1, x) for x in moves_1 if tuple_add(c1, x) not in explored and tuple_add(c1, x) in BOARD_COORDS] 
     explored.extend(potential_moves)
+
     dprint("# potential moves: {}".format(potential_moves))
     dprint("explored: {}".format(explored))
+
     # distances is the subtraction of each tuple in potential_moves from the goal
     # we want to find the smallest distance posible
     distances = [tuple_dif(x, c2) for x in potential_moves]
+
     dprint("# upper distances: {}".format(distances))
+
     short_path.append(potential_moves[distances.index(min_tuple(distances))])
 
     return find_short_path(short_path[-1], c2, explored)
 
 
-# finds the "minimum distance" tuple by adding up the absolute value of each element in a tuple, and selecting the minimum tuple from there
-# essentially finds the closest tuple to (0,0) from the list
+"""
+finds the "minimum distance" tuple by adding up the absolute value of each element in a tuple, and selecting the minimum tuple from there
+essentially finds the closest tuple to (0,0) from the list
+"""
 def min_tuple(tuple_list):
     dprint("# "+str(tuple_list))
     distances = [sum([abs(y) for y in x]) for x in tuple_list]
@@ -91,14 +101,18 @@ def min_tuple(tuple_list):
     return tuple_list[distances.index(min(distances))]
 
 
-# calculates "manhattan" distance between two hexes
+"""
+calculates "manhattan" distance between two hexes
+"""
 def dist(c1, c2):
     # translates the coordinates so that c1 is at (0,0,0), any adjustments to each element to c2 as well
     ####dprint(tuple_dif(c2, c1))
     return max(abs(x) for x in tuple_dif(c2, c1))
 
 
-#  A list of coordinates for which the given colour can move off the board
+"""
+A list of coordinates for which the given colour can move off the board
+"""
 def gen_goal_space(col):
     edge_hexes = gen_valid_move_norms(3)
     index = -1
@@ -112,7 +126,9 @@ def gen_goal_space(col):
         dprint("ERROR NOT GOOD COLOUR")
     return [x for x in edge_hexes if x[index]==3]
 
-# finds the coordinate pair with one item from each list, with minimum distance between coords
+"""
+finds the coordinate pair with one item from each list, with minimum distance between coords
+"""
 def min_dist_coords(piece_list, goal_list):
     # maps each pair to a distance between them
     dprint("piece list, goal list: {}, {}".format(piece_list, goal_list))
@@ -125,5 +141,3 @@ def min_dist_coords(piece_list, goal_list):
         if x[2] == min_dist:
             return [x[0], x[1]]
         
-
-
