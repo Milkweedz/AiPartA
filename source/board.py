@@ -24,7 +24,7 @@ def init():
 def setup(jsondata):
     init()
     dprint(jsondata.keys())
-    colour = jsondata.pop(COLOUR_KEY)
+    colour = jsondata.pop("colour")
     # read through file, add corresponding values to dictionary
     for key in jsondata.keys():
         for i in jsondata[key]:
@@ -59,13 +59,18 @@ def get_col_coord_dict(colour):
 Returns a dictionary of only the pieces on the board, not the blank spaces
 I'm sure there's some fancy list comprehension to use here
 """
-def get_pieces():
+def get_pieces(stringify = False):
         new_dict = {}
         for x in board_dict.keys():
                 if board_dict[x] != BLANK_SPACE:
-                        new_dict[x] = board_dict[x] 
+                        if stringify is True:
+                                new_dict[Formatting.tuple_to_string(Formatting.tuple2throuple(x))] = board_dict[x] 
+                        else:
+                                new_dict[x] = board_dict[x] 
         dlprint(new_dict)
         return new_dict
+
+
 # changes pieces on the board, or removes them
 def update_piece(coords):
         dprint(type(coords))

@@ -7,6 +7,7 @@ Formats directions for the next step as necessary
 
 from Formatting import convert, string_to_tuple, tuple_dif
 from sys import exit
+from util import valid_move, gen_valid_move_norms
 
 MOVE = "MOVE"
 JUMP = "JUMP"
@@ -15,10 +16,7 @@ NONE = "NONE"
 
 PLCHOLDER = "????"
 
-def gen_valid_move_norms(dist):
-    ran = range(-dist,dist+1)
-    # list comprehension to generate valid jumps from (0,0,0)
-    return [(q,r,s) for q in ran for r in ran for s in ran if q+r+s==0 and (dist in(q,r,s)or-dist in(q,r,s))]
+
 
 # takes an beginning hex, a destination, and outputs them correctly
 def move_to(method, coords):
@@ -75,10 +73,8 @@ def det_move(coords):
 
 
 # from the change in coordinates, determines if the move is a jump, move, or exit
-def determine_move(coords):
-    init_coords = list(coords[0])
-    end_coords = list(coords[1])
-
+def determine_move(init_coords, end_coords):
+    
     end_coords = string_to_tuple(end_coords)
    #### print(type(end_coords))
 
@@ -135,7 +131,5 @@ def determine_move(coords):
     # returns 3-tuple to 2-tuple.
     return move_to(move_command, [source_coord[:2], destin_coord[:2]])
 
-# checks if a particular move dist away is a valid move to dest coord
-def valid_move(dist, coord1, coord2):
-    return bool(tuple_dif(coord1, coord2) in gen_valid_move_norms(dist)) 
+
 

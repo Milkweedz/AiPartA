@@ -5,7 +5,7 @@ import time
 import itertools
 import Formatting
 
-from util import dprint, dlprint
+from util import dprint, dlprint, valid_move
 
 
 # Variables and constants used for calculations
@@ -218,7 +218,7 @@ def node_expander(goal):
 
     # if already explored, discard node
     if stringified_state in explored_states:
-        return False
+        return (1000, 1000)
 
     # add state to explored states
     if prev_state is None:
@@ -245,6 +245,7 @@ def node_expander(goal):
             stringified_new_pos = Formatting.tuple_to_string(new_pos)
 
             # check if any piece on there (since beginning of the turn or in the simulation)
+            #####print("Is {} in {}? {}".format(stringified_new_pos, board_items, stringified_new_pos in board_items))
             if stringified_new_pos in board_items or new_pos in state:
                 new_pos = tuple(map(operator.add, new_pos, unit_move))  # move again = jump over piece
                 (q, r, s) = new_pos
@@ -257,6 +258,7 @@ def node_expander(goal):
             if max(abs(q), abs(r), abs(s)) > board_radius:
                 continue
 
+            
             valid_moves.append((piece, new_pos))
 
     # explore successors of current node, iterate through valid moves
@@ -292,7 +294,7 @@ def node_expander(goal):
             pass
 
     # goal has not been found
-    return False
+    return (1000, 1000)
 
 
 """
@@ -302,24 +304,34 @@ def path_finder(goal):
     current = 0                         # keep track of node resource
     start_time = time.time()            # keep track of time resource
 
-    path_found = False
-    while time_limit(start_time, limit=25) is True:
+    path_found_bool = False
+    path_found = tuple([1000, 1000])
+    dprint(path_found)
+    dprint(bool(path_found == None))
+    
+    # number of seconds, it was originally 25, setting it to one for brevity
+    while time_limit(start_time, limit=1) is True and path_found_bool==False:
     # while node_limit(current, limit=50) is True:
         # run node_expander i number of times before checking time elapsed
         i = 1000
-        while not fringe_nodes.empty() and i > 0 and (path_found is False or path_found[0] < min_f[0]):
-
+        # this needs debugging. TODO those ending brackets specifically
+        while not fringe_nodes.empty() and i > 0 and (path_found_bool is False or (path_found[0] != 1000 and path_found[0] < min_f[0])):
+            
             path_found = node_expander(goal)
 
-            if path_found is not False:
+            dprint(path_found)
+            dprint(bool(path_found == None))
+            if path_found[0] != 1000:
+                path_found_bool = True
                 print("# Path found")
+                dprint(path_found)
                 node = Formatting.tuple_to_string(path_found[1])
 
             i -= 1
         current += 1
 
     # if goal not found, must have reached resource limit
-    if path_found is False:
+    if path_found_bool is False:
         print("# Resource limit")
         node = Formatting.tuple_to_string(min_f[1])
 
@@ -371,7 +383,7 @@ def dict_to_matrix(board):
     for key in keys:
         coord = Formatting.string_to_tuple(key)
         # TODO can this be just coord[:2]???
-        q, r = coord
+        q, r, s = coord
 
         board_matrix[q][r] = board[key]
 

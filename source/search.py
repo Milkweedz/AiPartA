@@ -24,15 +24,34 @@ def main():
     # TODO: Search for and output winning sequence of moves
     # ...
 
-    board.setup(data)
+    dprint(data)
+    dprint(data.keys())
+    dprint(data.get(COLOUR_KEY))
+    dprint(type(data.get(COLOUR_KEY)))
+    dprint(data.keys())
+
     print_board(board.get_board(), debug=True)
+
+    colour = data.get(COLOUR_KEY)
+
+    board.setup(data)
+    print("# Colour is {}, coords at {}".format(colour, board.get_col_coord_tuple("red")))
+    print("# Initial board:")
+    print_board(board.get_board(), debug=True)
+
+    while len(board.get_col_coord_dict(colour)) > 0:
+    
+        temp_path = algorithmtemp.get_next_move(board.get_pieces(True), board.get_col_coord_tuple("red"), (0,3))
+        coords = output.determine_move(board.get_col_coord_tuple("red"), temp_path)
+        board.update_piece(coords)
+        print_board(board.get_board(), debug=True)
 
     ####print(astar.find_short_path((0,3,-3), (1,-3,2)))
     ####print(astar.dist((0,3,-3), (3,-2,-1)))
 
 
     ####algorithmtemp.get_next_move({(-3, 0, 3): "r", (-3, 1, 2): "r", (-3, 2, 1): "r", (-3, 3, 0): "r", (-2, -1, 3): "block", (-2, 0, 2): "block", (-2, 1, 1): "block"}, ((-3, 0, 3), (-3, 1, 2), (-3, 2, 1), (-3, 3, 0)), (0,3))
-    algorithmtemp.get_next_move(board.get_pieces(), board.get_col_coord_tuple("red"), (0,3))
+    ####algorithmtemp.get_next_move(board.get_pieces(), board.get_col_coord_tuple("red"), (0,3))
 
     
     """
