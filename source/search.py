@@ -27,8 +27,12 @@ def main():
     # TODO: Search for and output winning sequence of moves
     # ...
 
-    print(astar.find_short_path((1,-1,0), (3,-3,0)))
-    print((1,1,0)==(1,1,0))
+    board.setup(data)
+
+    print(astar.find_short_path((0,3,-3), (1,-3,2)))
+    print(astar.dist((0,3,-3), (3,-2,-1)))
+
+    next_coords = astar.find_next_step(board.get_board(), "red")
     
     # make sure we know what colour we are
     """
