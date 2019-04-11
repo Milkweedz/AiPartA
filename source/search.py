@@ -27,7 +27,8 @@ def main():
     # TODO: Search for and output winning sequence of moves
     # ...
 
-    print(astar.gen_goal_space(GRN))
+    print(astar.find_short_path((1,-1,0), (3,-3,0)))
+    print((1,1,0)==(1,1,0))
     
     # make sure we know what colour we are
     """
