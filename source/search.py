@@ -12,7 +12,13 @@ import output
 import Formatting
 import Algorithm
 
+import astar
+
 COLOUR_KEY = "colour"
+
+RED = "red"
+BLU = "blue"
+GRN = "green"
 
 def main():
     with open(sys.argv[1]) as file:
@@ -20,8 +26,11 @@ def main():
         
     # TODO: Search for and output winning sequence of moves
     # ...
+
+    print(astar.gen_goal_space(GRN))
     
     # make sure we know what colour we are
+    """
     colour = data.get(COLOUR_KEY)
 
     board.setup(data)
@@ -31,10 +40,11 @@ def main():
 
     while(1):
     
-        temp_path = Algorithm.get_next_move(board.get_col_coord_dict(colour), board.get_col_coord_tuple("red"), (0,3))
+        temp_path = Algorithm.get_next_move(board.get_col_coord_dict(colour), board.get_col_coord_tuple("red"), (0,9))
         coords = output.determine_move(board.get_col_coord_tuple("red"), temp_path)
         board.update_piece(coords)
         print_board(board.get_board(), debug=True)
+    """
 
     # print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
 

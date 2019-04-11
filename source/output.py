@@ -47,15 +47,15 @@ def determine_move(init_coords, end_coords):
     # treats the coordinate lists as sets, uses difference to find the elements that are in one but not the other
     checker=list(set(init_coords)-set(end_coords))+list(set(end_coords)-set(init_coords))
     #####print("Coords: ")
-   ### print(init_coords)
-   ### print(end_coords)
+    print(init_coords)
+    print(end_coords)
 
     # clean up list, idk where these errors are coming from atm
     checker = [x for x in checker if type(x) is tuple]
     ###print(checker)
     # checking for type is hugely not the greatest thing
     checker = [convert(x) for x in checker if type(x) is tuple]
-   ### print(checker)
+    print(checker)
 
     # arguments for the move function at the end. will be changed according to inputs
     move_command = None

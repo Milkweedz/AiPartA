@@ -287,16 +287,30 @@ def path_finder(goal):
     current = 0                         # keep track of node resource
     start_time = time.time()            # keep track of time resource
 
-    path_found = False
-    while time_limit(start_time, limit=25) is True and path_found is False :
+    is_path_found = False
+    path_found = [100000]
+    while time_limit(start_time, limit=5) is True and is_path_found is False :
     # while node_limit(current, limit=50) is True:
         # run node_expander i number of times before checking time elapsed
         i = 1000
-        while not fringe_nodes.empty() and i > 0 and (path_found is False or path_found[0] < min_f[0]):
 
+        #### hacking this loop so that we can deal with path found being a boolean.
+        while not fringe_nodes.empty() and i > 0 and (is_path_found is False or path_found[0] < min_f[0]):
+            
+            """if type(path_found) is not bool:
+                if path_found[0]<min_f[0]:
+                    break"""
+
+            #### print("# i: {}, fringe empty: {}, path found: {}, path<min: {}".format(fringe_nodes.empty(), i, path_found, path_found[0]<min_f[0]))
             path_found = node_expander(goal)
+            if type(path_found) is bool:
+                is_path_found = False
+            else:
+                print ("path found: "+str(path_found))
+                is_path_found = True
+            
 
-            if path_found is not False:
+            if is_path_found is not False:
                 print("# Path found")
                 node = Formatting.tuple_to_string(path_found[1])
 
@@ -304,7 +318,7 @@ def path_finder(goal):
         current += 1
 
     # if goal not found, must have reached resource limit
-    if path_found is False:
+    if is_path_found is False:
         print("# Resource limit")
         node = Formatting.tuple_to_string(min_f[1])
 
