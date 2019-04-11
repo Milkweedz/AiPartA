@@ -20,6 +20,8 @@ RED = "red"
 BLU = "blue"
 GRN = "green"
 
+DEBUG = True
+
 def main():
     with open(sys.argv[1]) as file:
         data = json.load(file)
@@ -29,10 +31,14 @@ def main():
 
     board.setup(data)
 
-    print(astar.find_short_path((0,3,-3), (1,-3,2)))
-    print(astar.dist((0,3,-3), (3,-2,-1)))
+    ####print(astar.find_short_path((0,3,-3), (1,-3,2)))
+    ####print(astar.dist((0,3,-3), (3,-2,-1)))
 
     next_coords = astar.find_next_step(board.get_board(), "red")
+    dprint("# next coords: {}".format(next_coords))
+
+    output.move_to("MOVE", next_coords[0], next_coords[1])
+    board.update_piece(next_coords)
     
     # make sure we know what colour we are
     """
@@ -54,8 +60,16 @@ def main():
     # print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
 
 
+# debug printer
+def dprint(s):
+    if DEBUG:
+        print("# {}".format(s))
+    return
 
-
+def dlprint(s):
+    if DEBUG:
+        print(*s,sep='\n')
+    return
     
 
 
