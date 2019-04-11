@@ -13,6 +13,7 @@ import Algorithm
 from util import dprint
 
 import astar
+import algorithmtemp
 
 COLOUR_KEY = "colour"
 
@@ -29,8 +30,13 @@ def main():
     ####print(astar.find_short_path((0,3,-3), (1,-3,2)))
     ####print(astar.dist((0,3,-3), (3,-2,-1)))
 
-    
 
+    ####algorithmtemp.get_next_move({(-3, 0, 3): "r", (-3, 1, 2): "r", (-3, 2, 1): "r", (-3, 3, 0): "r", (-2, -1, 3): "block", (-2, 0, 2): "block", (-2, 1, 1): "block"}, ((-3, 0, 3), (-3, 1, 2), (-3, 2, 1), (-3, 3, 0)), (0,3))
+    algorithmtemp.get_next_move(board.get_pieces(), board.get_col_coord_tuple("red"), (0,3))
+
+    
+    """
+    IT ACTUALLY WORKS YEAH
     while len(board.get_col_coord_dict("red"))>0:
         next_coords = astar.find_next_step(board.get_board(), "red")
         dprint("# next coords: {}".format(next_coords))
@@ -39,6 +45,7 @@ def main():
         board.update_piece(next_coords)
 
         print_board(board.get_board(), debug=True)
+    """
 
     
     # make sure we know what colour we are

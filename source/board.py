@@ -7,7 +7,7 @@ BLOCKS_KEY = "blocks"
 BLOCKS_STR = "[=]"
 
 import Formatting
-from search import dprint
+from util import dprint, dlprint
 
 board_dict = {}
 #colour = ""
@@ -55,6 +55,17 @@ def get_col_coord_dict(colour):
                         new_dict[Formatting.convert(coord)]=colour
         return new_dict
 
+"""
+Returns a dictionary of only the pieces on the board, not the blank spaces
+I'm sure there's some fancy list comprehension to use here
+"""
+def get_pieces():
+        new_dict = {}
+        for x in board_dict.keys():
+                if board_dict[x] != BLANK_SPACE:
+                        new_dict[x] = board_dict[x] 
+        dlprint(new_dict)
+        return new_dict
 # changes pieces on the board, or removes them
 def update_piece(coords):
         dprint(type(coords))

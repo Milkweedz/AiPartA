@@ -2,7 +2,7 @@ RED = "red"
 BLU = "blue"
 GRN = "green"
 
-DEBUG = False
+DEBUG = True
 
 
 # debug printer
