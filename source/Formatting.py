@@ -22,6 +22,7 @@ def string_to_tuple(string):
     #return tupl
 
 #takes two tuples of the same length and subtracts each element. zip returns an iterator
+# perhaps can use operator from python? there's operator.add....
 def tuple_dif(t1, t2):
     return tuple([x-y for x, y in zip(t1,t2)])
 

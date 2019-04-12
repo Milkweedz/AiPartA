@@ -39,33 +39,19 @@ board_matrix = [[None for x in range(matrix_size)] for y in range(matrix_size)]
 def init():
     global min_f, explored_states, board_items, fringe_nodes
     min_f = [None, None]
-    # nope don't want to get rid of explored states!
-    ###explored_states = {}
+    # nope don't want to get rid of explored states! But bugs exist if we don't remove it :(
+    explored_states = {}
     board_items = {}
     with fringe_nodes.mutex:
         fringe_nodes.queue.clear()
     
 
-
 """
-Attempt to transfer the work Jay did into this algorithm so that things work
-"""
-def find_goal_edge(col_str):
-    if col_str==RED: return 0
-    elif col_str==GRN: return 1
-    elif col_str==BLU: return 2
-    else: 
-        print("wrong colour!")
-        print(col_str)
-        exit()
-
-"""
-TODO IDK WHAT THIS DOES REALLY BUT WE'LL SEE
-OH YEAH IT'S THE FUNCTION GIVEN TO INTERFACE WITH EVERYTHING ELSE. OH WELL
+Returns the next state of the pieces, a tuple of what the next four-piece configuration should be
 """
 def get_next_move(board_dict, my_pieces, goal):
     # make sure we're using the global variables
-    global board_items, board_matrix, explored_states, fringe_nodes, prev_path
+    global board_items, board_matrix, explored_states, fringe_nodes
     init()
 
     # transfer colour data into 3d axis index
@@ -84,7 +70,7 @@ def get_next_move(board_dict, my_pieces, goal):
 
 
 """
-TODO CALCULATES HEURISTIC I THINK
+Calculates the heuristic, h(n)
 """
 # coords is a list of 1 to 4 coordinate tuples of pieces
 #   coordinate tuple includes 3 axes i.e. q,r,s where s is derived from -q-r
@@ -156,14 +142,6 @@ def heuristic(coords, goal):
     else:
         minsum_separation = 0
 
-    # some code for future implementation of num_jumps
-    # for i in range(len(sum_separations)):
-    #     if minsum_separation is None or sum_separations[i] < minsum_separation:
-    #         minsum_separation = sum_separations[i]
-    #         num_jumps = minsum_separation + num_jumps_array[i]
-
-    # h = total_distance + num_pieces - num_jumps
-
     # modifier on heuristic value "h(n)"
     h = math.ceil(total_distance/2) + minsum_separation + num_pieces
 
@@ -171,10 +149,8 @@ def heuristic(coords, goal):
 
 
 """
-TODO OH BOY THIS ONE IS A DOOZY
-HAVE NO IDEA WHAT THIS ONE DOES AT ALL REALLY YET
+Explores nodes according the the priority queue
 """
-
 def node_expander(goal):
     # returns the cheapest fringe state that matches goal
     # returns False if no goal-matching state is found
@@ -220,7 +196,6 @@ def node_expander(goal):
 
         # add option to leave board
         if piece[goal_axis] == goal_value:
-            #####print("# Piece at {} can leave".format(piece))
             valid_moves.append((piece, None))
             continue
 
@@ -230,31 +205,18 @@ def node_expander(goal):
             stringified_new_pos = Formatting.tuple_to_string(new_pos)
 
             # check if any piece on there (since beginning of the turn or in the simulation)
-            #####print("Is {} in {}? {}".format(stringified_new_pos, board_items, stringified_new_pos in board_items))
             if stringified_new_pos in board_items or new_pos in state:
                 new_pos = tuple(map(operator.add, new_pos, unit_move))  # move again = jump over piece
                 (q, r, s) = new_pos
                 stringified_new_pos = Formatting.tuple_to_string(new_pos)
-            ###elif new_pos in [(0, 0, 0), (0, 1, -1), (0, -1, 1)]:
-                ####print("This position {} is not filled".format(stringified_new_pos))
-            
-            
-            
+     
             if stringified_new_pos in board_items or new_pos in state:
                
                 continue
-            ####else:
-                ####print("{} not in {} or {} = {}".format(stringified_new_pos, board_items, new_pos, state))
 
             # skip move if it puts piece out of board
             if max(abs(q), abs(r), abs(s)) > board_radius:
                 continue
-
-            #making sure a move of 1 or 2 is being done
-            ####if new_pos == (0, 1, -1) and piece == (0, 1, -1):
-                ####print("# is {} == {}? {}".format(piece, new_pos, piece==new_pos))
-            ###if piece == new_pos:
-                ###continue
 
             valid_moves.append((piece, new_pos))
     
@@ -270,7 +232,6 @@ def node_expander(goal):
         else:
             next_state = state[:index] + state[index+1:]
 
-        ###print(choice)
         stringified_next = Formatting.tuple_to_string(next_state)
         if stringified_next not in explored_states:
             h = heuristic(coords=next_state, goal=goal)
@@ -297,7 +258,7 @@ def node_expander(goal):
 
 
 """
-finds a path to the current goal, returns as a list/tuple????
+finds a path to the current goal, returns as a tuple
 """
 def path_finder(goal):
     current = 0                         # keep track of node resource
@@ -366,12 +327,7 @@ def time_limit(start_time, limit):
     else:
         return True
 
-# There's gotta be a better way to do this...
-def node_limit(current, limit):
-    if current <= limit:
-        return True
-    else:
-        return False    
+
 
 """
 converts a dictionary into a 2d matrix for this hex board
@@ -389,3 +345,15 @@ def dict_to_matrix(board):
         board_matrix[q][r] = board[key]
 
     return board_matrix
+
+"""
+Attempt to transfer the work Jay did into this algorithm so that things work
+"""
+def find_goal_edge(col_str):
+    if col_str==RED: return 0
+    elif col_str==GRN: return 1
+    elif col_str==BLU: return 2
+    else: 
+        print("wrong colour!")
+        print(col_str)
+        exit()

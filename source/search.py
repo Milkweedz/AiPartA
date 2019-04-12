@@ -9,10 +9,10 @@ import sys
 import json
 import board
 import output
-import Algorithm
+
 from util import dprint
 
-import astar
+
 import pathfinder
 import Formatting
 
@@ -35,20 +35,15 @@ def main():
     move_counter=0
 
     while len(board.get_col_coord_dict(colour)) > 0:
-
-        ###print("board by piece")
-        ###print(board.get_col_coord_tuple("red"))
     
         temp_path = pathfinder.get_next_move(board.get_pieces(True), board.get_col_coord_tuple(colour), (colour,3))
-        ###print("path found! : {}".format(temp_path))
+  
         coords = output.determine_move(board.get_col_coord_tuple(colour), Formatting.string_to_tuple(temp_path))
         board.update_piece(coords)
 
-        
-
         print_board(board.get_board(), debug=True)
         move_counter +=1
-        ###print(board.get_pieces(True))
+
 
     print("# Number of moves: {}".format(move_counter))
 

@@ -10,7 +10,6 @@ import Formatting
 from util import dprint, dlprint
 
 board_dict = {}
-#colour = ""
 
 #give board own dictionary to store board state. set empty board
 def init():
@@ -42,7 +41,7 @@ def assign_to_board(key, value, colour):
     elif key==BLOCKS_KEY:
         board_dict[value]=BLOCKS_STR
 
-#TODO????? defunct with get_col_coord_dict???
+# returns a tuple of the positions of all the pieces of the given colour
 def get_col_coord_tuple(colour):
         return tuple([Formatting.convert(coord) for coord in board_dict if board_dict[coord] == colour])
 
