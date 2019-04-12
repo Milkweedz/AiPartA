@@ -13,7 +13,7 @@ import Algorithm
 from util import dprint
 
 import astar
-import algorithmtemp
+import pathfinder
 import Formatting
 
 COLOUR_KEY = "colour"
@@ -39,7 +39,7 @@ def main():
         ###print("board by piece")
         ###print(board.get_col_coord_tuple("red"))
     
-        temp_path = algorithmtemp.get_next_move(board.get_pieces(True), board.get_col_coord_tuple(colour), (colour,3))
+        temp_path = pathfinder.get_next_move(board.get_pieces(True), board.get_col_coord_tuple(colour), (colour,3))
         ###print("path found! : {}".format(temp_path))
         coords = output.determine_move(board.get_col_coord_tuple(colour), Formatting.string_to_tuple(temp_path))
         board.update_piece(coords)

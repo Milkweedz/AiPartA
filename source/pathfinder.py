@@ -24,7 +24,7 @@ board_items = {}
 #will contain all explored states. Key:coordinate tuple, Val: explored yes/no
 explored_states={}
 
-# Nodes that are adjacent to explored nodes, ordered by f(n), where f(n) is the TODO!!!!!!
+# Nodes that are adjacent to explored nodes, ordered by f(n), which is the heuristic
 fringe_nodes = queue.PriorityQueue()
 
 # node with minimum f(n). min_f[0] holds f(n) value, min_f[1] holds state
@@ -35,12 +35,12 @@ min_f = [None, None]
 matrix_size = board_radius * 2 + 1
 board_matrix = [[None for x in range(matrix_size)] for y in range(matrix_size)]
 
-prev_path = []
 
 def init():
     global min_f, explored_states, board_items, fringe_nodes
     min_f = [None, None]
-    explored_states = {}
+    # nope don't want to get rid of explored states!
+    ###explored_states = {}
     board_items = {}
     with fringe_nodes.mutex:
         fringe_nodes.queue.clear()
@@ -71,7 +71,6 @@ def get_next_move(board_dict, my_pieces, goal):
     # transfer colour data into 3d axis index
     print()
     goal = (find_goal_edge(goal[0]), goal[1])
-
     board_items = board_dict
 
     # init the 2d array from the board dictionary
@@ -79,13 +78,8 @@ def get_next_move(board_dict, my_pieces, goal):
 
     # initialise the positions of the pieces in the queue
     fringe_nodes.put((0, 0, my_pieces, None))
-  
     path = path_finder(goal)
-
     print("# Next Path: {}".format(path))
-   
-    prev_path = path
-    
     return path[1]
 
 
@@ -104,10 +98,7 @@ def heuristic(coords, goal):
     sum_separations = []    # sum of separations of pairs of pieces
     odd_piece = []          # unpaired piece in situations where there are odd number of pieces
     piece_distances = []      # sum of shortest distances between pieces and their goal
-    # blocks_goal_axis_coords = []
-    # block_discount = []
-    # num_jumps_array = []
-    # num_jumps = 0
+ 
     goal_axis = goal[0]     # axis perpendicular to the side our pieces have to move to
     goal_value = goal[1]    # either -n or n, where n is the radius of the hexagonal board
     #   distinguishes between the two sides perpendicular to the goal_axis
@@ -149,22 +140,6 @@ def heuristic(coords, goal):
             for x in range(num_pieces):
                 if x not in set(tuple(itertools.chain.from_iterable(combinations[i]))):
                     odd_piece.append(coords[x])
-
-    # future implementation
-    # for piece_pair in piece_pairs:
-    #     (p1, p2) = piece_pair
-    #     intersection_x = min([coords[p1][axes[0]], coords[p2][axes[0]]], key=lambda x: abs(-goal_value - x))
-    #     intersection_y = min([coords[p1][axes[1]], coords[p2][axes[1]]], key=lambda x: abs(-goal_value - x))
-    #     intersection_goal_axis_val = - intersection_x - intersection_y
-        # num_jumps_array.append(abs(goal_value - intersection_goal_axis_val))
-
-    # future implementation of estimation for jumping for odd pieces. currently assume odd pieces can always jump
-    # jumps = []
-    # for odd in odd_piece:
-    #     piece_distance = abs(odd[goal_axis] - goal_value)
-    #     jumps.append(math.floor(piece_distance / 2))
-    # if len(jumps) > 0:
-    #     num_jumps_array = list(map(operator.add, num_jumps_array, jumps))
 
     for i in range(len(combinations)):
         sum_separation = 0
@@ -282,32 +257,10 @@ def node_expander(goal):
                 ###continue
 
             valid_moves.append((piece, new_pos))
-            
-   ### print(valid_moves)
-    # clean up valid moves
-    ###valid_moves = [x for x in valid_moves if x[1]==None or valid_move(1, x[0], x[1]) or valid_move(2, x[0], x[1])]
-    unique_moves=[]
-    unique_moves = [x for x in valid_moves if x not in unique_moves]
-   #### print(unique_moves)
-
-    """
-    test_dict = {}
-    for x in valid_moves:
-        test_dict[x[0]]=x[1]
-    test_keys = [x for x in test_dict.keys()]
-    test_keys.sort(key=first_elem)
-    for y in test_keys:
-        if y== test_dict[y]:
-            print("{} || {}".format(y, test_dict[y]))"""
+    
     # explore successors of current node, iterate through valid moves
     for choice in valid_moves:
-        if (choice[0]==(0, -1, 1) and choice[1][0]==0 and False):
-            print("choice 0: {}, type: {}".format(choice[0], type(choice[0])))
-            print("choice 1: {}, type: {}".format(choice[1], type(choice[1])))
-            print("---------------------------------------------------------")
-        if (choice[0]==choice[1]):
-            print(choice)
-            exit()
+        
         # choice[0] is original position of piece, index is index of piece in node tuple
         index = state.index(choice[0])
         # if piece not leaving board
@@ -356,7 +309,7 @@ def path_finder(goal):
     dprint(bool(path_found == None))
     
     # number of seconds, it was originally 25, setting it to one for brevity
-    while time_limit(start_time, limit=10) is True and path_found_bool==False:
+    while time_limit(start_time, limit=2) is True and path_found_bool==False:
     # while node_limit(current, limit=50) is True:
         # run node_expander i number of times before checking time elapsed
         i = 1000
@@ -379,6 +332,8 @@ def path_finder(goal):
     # if goal not found, must have reached resource limit
     if path_found_bool is False:
         print("# Resource limit")
+        if None in min_f:
+            print(min_f)
         node = Formatting.tuple_to_string(min_f[1])
 
     path = []
