@@ -21,7 +21,10 @@ PLCHOLDER = "????"
 # takes an beginning hex, a destination, and outputs them correctly
 def move_to(method, coords):
     src = coords[0]
-    dst = PLCHOLDER if len(coords)!=2 else coords[1]
+    if coords[0] == None:
+        print('HELP'+PLCHOLDER)
+        exit()
+    dst = PLCHOLDER if len(coords)!=2 or coords[1]==None else coords[1]
     if method == EXIT:
         print("{} from {}.".format(EXIT, src))
     else:
@@ -77,11 +80,12 @@ def determine_move(init_coords, end_coords):
     if init_coords==end_coords:
         print("ERROR, coords are equal! {}={}".format(init_coords, end_coords))
         exit()
+    """
     for x in init_coords:
         for y in end_coords:
             print("comparing {} and {}".format(x, y))
             print(x==y)
-    
+    """
     end_coords = string_to_tuple(end_coords)
    #### print(type(end_coords))
 
@@ -118,9 +122,10 @@ def determine_move(init_coords, end_coords):
         return
 
     #first, if there is only one element, an exit has been made
-    if len(checker)==1:
+    if len(checker)==1 or None in checker:
         print("length of 1")
         move_command = EXIT
+        return move_to(move_command, [source_coord[:2]])
     else:
         destin_coord = checker[1]
         
@@ -130,6 +135,7 @@ def determine_move(init_coords, end_coords):
         elif valid_move(1, source_coord,destin_coord):
             move_command = MOVE
         else:
+            
             print("ERROR in checking valid move!")
             print(source_coord)
             print(destin_coord)

@@ -4,6 +4,7 @@ import operator
 import time
 import itertools
 import Formatting
+import copy
 
 from util import dprint, dlprint, valid_move, first_elem
 from sys import exit
@@ -30,6 +31,16 @@ min_f = [None, None]
 matrix_size = board_radius * 2 + 1
 board_matrix = [[None for x in range(matrix_size)] for y in range(matrix_size)]
 
+prev_path = []
+
+def init():
+    global min_f, explored_states, board_items, fringe_nodes
+    min_f = [None, None]
+    explored_states = {}
+    board_items = {}
+    with fringe_nodes.mutex:
+        fringe_nodes.queue.clear()
+    
 
 
 """
@@ -66,22 +77,50 @@ OH YEAH IT'S THE FUNCTION GIVEN TO INTERFACE WITH EVERYTHING ELSE. OH WELL
 """
 def get_next_move(board_dict, my_pieces, goal):
     # make sure we're using the global variables
-    global board_items, board_matrix, explored_states, fringe_nodes
-
+    global board_items, board_matrix, explored_states, fringe_nodes, prev_path
+    init()
+    """
+    ###print("board dict, my pieces, goal")
+    print(board_dict)
+    print(my_pieces)
+    print(goal)
+    """
+    ###fringe_nodes = queue.PriorityQueue()
+    ###fringe_nodes.clear()
     dprint(type(board_dict))
     dprint(board_dict)
     board_items = board_dict
+    ###print(board_items)
     # TODO so apparently board_items is null???
     dprint(type(board_items))
     dprint(board_items)
     # init the 2d array from the board dictionary
     board_matrix = dict_to_matrix(board_items)
-
+    
+   #### print("is the queue empty? {}".format(fringe_nodes.empty()))
     # initialise the positions of the pieces in the queue
     fringe_nodes.put((0, 0, my_pieces, None))
+    ###print("Fringe NODES ---------------")
+    
+   #### print("is the queue empty? {}".format(fringe_nodes.empty()))
+    
     path = path_finder(goal)
+    """
+    if path == prev_path:
+        print(" path is same!!!")
+        exit()
+    else:
+        print("Path is not same!")
+        print(prev_path)
+        print(path)
+    """
     print("# Next Move: ", path[1])
-
+    ###print(path)
+    prev_path = path
+    ###test = []
+   ### while fringe_nodes.empty() is not False:
+     ###   test.append(fringe_nodes.get())
+    ###print(test)
     return path[1]
 
 
@@ -202,7 +241,7 @@ def node_expander(goal):
     # "cheats" by using (if h(n)==0) to determine if next_state matches goal, saves having to expand the next_state
 
     global board_radius
-    global board, explored_states, fringe_nodes
+    global explored_states, fringe_nodes
     global min_f
 
     # node is the current state of your pieces on the board, index 1 removes priority value
@@ -352,7 +391,7 @@ def path_finder(goal):
     dprint(bool(path_found == None))
     
     # number of seconds, it was originally 25, setting it to one for brevity
-    while time_limit(start_time, limit=1) is True and path_found_bool==False:
+    while time_limit(start_time, limit=2) is True and path_found_bool==False:
     # while node_limit(current, limit=50) is True:
         # run node_expander i number of times before checking time elapsed
         i = 1000
