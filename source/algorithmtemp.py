@@ -213,6 +213,8 @@ def node_expander(goal):
     goal_axis = goal[0]     # axis perpendicular to the side our pieces have to move to
     goal_value = goal[1]    # either -n or n, where n is the radius of the hexagonal board
 
+    
+
     # stringification needed because strings are always identical if equivalent, tuples are not
     stringified_state = Formatting.tuple_to_string(state)
 
@@ -223,6 +225,8 @@ def node_expander(goal):
     # add state to explored states
     if prev_state is None:
         explored_states[stringified_state] = "root"
+
+
     else:
         stringified_prev = Formatting.tuple_to_string(prev_state)
         explored_states[stringified_state] = stringified_prev
@@ -236,6 +240,7 @@ def node_expander(goal):
 
         # add option to leave board
         if piece[goal_axis] == goal_value:
+            #####print("# Piece at {} can leave".format(piece))
             valid_moves.append((piece, None))
             continue
 
@@ -250,6 +255,9 @@ def node_expander(goal):
                 new_pos = tuple(map(operator.add, new_pos, unit_move))  # move again = jump over piece
                 (q, r, s) = new_pos
                 stringified_new_pos = Formatting.tuple_to_string(new_pos)
+            ###elif new_pos in [(0, 0, 0), (0, 1, -1), (0, -1, 1)]:
+                ####print("This position {} is not filled".format(stringified_new_pos))
+            
 
             if stringified_new_pos in board_items or new_pos in state:
                 continue
@@ -258,15 +266,25 @@ def node_expander(goal):
             if max(abs(q), abs(r), abs(s)) > board_radius:
                 continue
 
-            
+            #making sure a move of 1 or 2 is being done
+            if new_pos == (0, 1, -1) and piece == (0, 1, -1):
+                print("# is {} == {}? {}".format(piece, new_pos, piece==new_pos))
+            ###if piece == new_pos:
+                ###continue
+
             valid_moves.append((piece, new_pos))
+            
+   ### print(valid_moves)
+    # clean up valid moves
+    valid_moves = [x for x in valid_moves if x[1]==None or valid_move(1, x[0], x[1]) or valid_move(2, x[0], x[1])]
+
 
     # explore successors of current node, iterate through valid moves
     for choice in valid_moves:
         # choice[0] is original position of piece, index is index of piece in node tuple
         index = state.index(choice[0])
         # if piece not leaving board
-        if choice[1] is not None:
+        if choice[1] is not None and choice[0] != choice[1]:
             # choice[1] is new position of the piece, next_node is the new state
             next_state = state[:index] + (choice[1],) + state[index+1:]
         else:
