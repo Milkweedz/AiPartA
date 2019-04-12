@@ -21,79 +21,36 @@ COLOUR_KEY = "colour"
 def main():
     with open(sys.argv[1]) as file:
         data = json.load(file)
-        
-    # TODO: Search for and output winning sequence of moves
-    # ...
 
-    dprint(data)
-    dprint(data.keys())
-    dprint(data.get(COLOUR_KEY))
-    dprint(type(data.get(COLOUR_KEY)))
-    dprint(data.keys())
+    # BEGIN #
 
-    print_board(board.get_board(), debug=True)
-
+    # Setup   
     colour = data.get(COLOUR_KEY)
-
     board.setup(data)
-    print("# Colour is {}, coords at {}".format(colour, board.get_col_coord_tuple("red")))
+
+    print("# Colour is {}, coords at {}".format(colour, board.get_col_coord_tuple(colour)))
     print("# Initial board:")
     print_board(board.get_board(), debug=True)
+
+    move_counter=0
 
     while len(board.get_col_coord_dict(colour)) > 0:
 
-        print("board by piece")
-        print(board.get_col_coord_tuple("red"))
+        ###print("board by piece")
+        ###print(board.get_col_coord_tuple("red"))
     
-        temp_path = algorithmtemp.get_next_move(board.get_pieces(True), board.get_col_coord_tuple("red"), (0,3))
-        print("path found! : {}".format(temp_path))
-        coords = output.determine_move(board.get_col_coord_tuple("red"), Formatting.string_to_tuple(temp_path))
+        temp_path = algorithmtemp.get_next_move(board.get_pieces(True), board.get_col_coord_tuple(colour), (colour,3))
+        ###print("path found! : {}".format(temp_path))
+        coords = output.determine_move(board.get_col_coord_tuple(colour), Formatting.string_to_tuple(temp_path))
         board.update_piece(coords)
 
         
 
         print_board(board.get_board(), debug=True)
-        print(board.get_pieces(True))
+        move_counter +=1
+        ###print(board.get_pieces(True))
 
-    ####print(astar.find_short_path((0,3,-3), (1,-3,2)))
-    ####print(astar.dist((0,3,-3), (3,-2,-1)))
-
-
-    ####algorithmtemp.get_next_move({(-3, 0, 3): "r", (-3, 1, 2): "r", (-3, 2, 1): "r", (-3, 3, 0): "r", (-2, -1, 3): "block", (-2, 0, 2): "block", (-2, 1, 1): "block"}, ((-3, 0, 3), (-3, 1, 2), (-3, 2, 1), (-3, 3, 0)), (0,3))
-    ####algorithmtemp.get_next_move(board.get_pieces(), board.get_col_coord_tuple("red"), (0,3))
-
-    
-    """
-    IT ACTUALLY WORKS YEAH
-    while len(board.get_col_coord_dict("red"))>0:
-        next_coords = astar.find_next_step(board.get_board(), "red")
-        dprint("# next coords: {}".format(next_coords))
-
-        output.det_move(next_coords)
-        board.update_piece(next_coords)
-
-        print_board(board.get_board(), debug=True)
-    """
-
-    
-    # make sure we know what colour we are
-    """
-    colour = data.get(COLOUR_KEY)
-
-    board.setup(data)
-    print("# Colour is {}, coords at {}".format(colour, board.get_col_coord_tuple("red")))
-    print("# Initial board:")
-    print_board(board.get_board(), debug=True)
-
-    while(1):
-    
-        temp_path = Algorithm.get_next_move(board.get_col_coord_dict(colour), board.get_col_coord_tuple("red"), (0,9))
-        coords = output.determine_move(board.get_col_coord_tuple("red"), temp_path)
-        board.update_piece(coords)
-        print_board(board.get_board(), debug=True)
-    """
-
-    # print(output.determine_move(["(1,2)", "(3,4)", "(1,1)"],["(1,2)", "(3,4)", "(0,0)"]))
+    print("# Number of moves: {}".format(move_counter))
 
 
 

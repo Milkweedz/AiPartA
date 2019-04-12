@@ -51,7 +51,7 @@ def det_move(coords):
 
     #first, if there is only one element, an exit has been made
     if len(coords)==1:
-        print("length of 1")
+        ###print("length of 1")
         move_command = EXIT
     else:
         destin_coord = coords[1]
@@ -86,28 +86,39 @@ def determine_move(init_coords, end_coords):
             print("comparing {} and {}".format(x, y))
             print(x==y)
     """
+    print("end_original: {}".format(end_coords))
     end_coords = string_to_tuple(end_coords)
    #### print(type(end_coords))
+    print("end_strtotuplel: {}".format(end_coords))
 
     # just in case the coords are passed as a tuple
     if type(init_coords) is tuple:
         init_coords = list(init_coords)
     if type(end_coords) is tuple:
-        end_coords = list(end_coords)
+        # if there's only one left in end coords, it'll become a list of integers
+        if any(end_coords) and type(list(end_coords)[0]) is int:
+            end_coords = [end_coords]
+        else:
+            end_coords = list(end_coords)
+    
+    print("end_listed: {}".format(end_coords))
         
     
     # treats the coordinate lists as sets, uses difference to find the elements that are in one but not the other
     checker=list(set(init_coords)-set(end_coords))+list(set(end_coords)-set(init_coords))
-    #####print("Coords: ")
+    print("Coords: ")
     print(init_coords)
     print(end_coords)
 
     # clean up list, idk where these errors are coming from atm
     checker = [x for x in checker if type(x) is tuple]
-    ###print(checker)
+    print("checker: ")
+    print(checker)
     # checking for type is hugely not the greatest thing
     checker = [convert(x) for x in checker if type(x) is tuple]
+    print("checker again: ")
     print(checker)
+    ###print(checker)
 
     # arguments for the move function at the end. will be changed according to inputs
     move_command = None
@@ -119,11 +130,12 @@ def determine_move(init_coords, end_coords):
         print(checker)
         print(len(checker))
         print("ERROR: Invalid coordinate entry!")
+        exit()
         return
 
     #first, if there is only one element, an exit has been made
     if len(checker)==1 or None in checker:
-        print("length of 1")
+        ###print("length of 1")
         move_command = EXIT
         return move_to(move_command, [source_coord[:2]])
     else:
