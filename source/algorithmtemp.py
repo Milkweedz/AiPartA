@@ -5,7 +5,8 @@ import time
 import itertools
 import Formatting
 
-from util import dprint, dlprint, valid_move
+from util import dprint, dlprint, valid_move, first_elem
+from sys import exit
 
 
 # Variables and constants used for calculations
@@ -258,17 +259,21 @@ def node_expander(goal):
             ###elif new_pos in [(0, 0, 0), (0, 1, -1), (0, -1, 1)]:
                 ####print("This position {} is not filled".format(stringified_new_pos))
             
-
+            
+            
             if stringified_new_pos in board_items or new_pos in state:
+               
                 continue
+            ####else:
+                ####print("{} not in {} or {} = {}".format(stringified_new_pos, board_items, new_pos, state))
 
             # skip move if it puts piece out of board
             if max(abs(q), abs(r), abs(s)) > board_radius:
                 continue
 
             #making sure a move of 1 or 2 is being done
-            if new_pos == (0, 1, -1) and piece == (0, 1, -1):
-                print("# is {} == {}? {}".format(piece, new_pos, piece==new_pos))
+            ####if new_pos == (0, 1, -1) and piece == (0, 1, -1):
+                ####print("# is {} == {}? {}".format(piece, new_pos, piece==new_pos))
             ###if piece == new_pos:
                 ###continue
 
@@ -276,20 +281,39 @@ def node_expander(goal):
             
    ### print(valid_moves)
     # clean up valid moves
-    valid_moves = [x for x in valid_moves if x[1]==None or valid_move(1, x[0], x[1]) or valid_move(2, x[0], x[1])]
+    ###valid_moves = [x for x in valid_moves if x[1]==None or valid_move(1, x[0], x[1]) or valid_move(2, x[0], x[1])]
+    unique_moves=[]
+    unique_moves = [x for x in valid_moves if x not in unique_moves]
+   #### print(unique_moves)
 
-
+    """
+    test_dict = {}
+    for x in valid_moves:
+        test_dict[x[0]]=x[1]
+    test_keys = [x for x in test_dict.keys()]
+    test_keys.sort(key=first_elem)
+    for y in test_keys:
+        if y== test_dict[y]:
+            print("{} || {}".format(y, test_dict[y]))"""
     # explore successors of current node, iterate through valid moves
     for choice in valid_moves:
+        if (choice[0]==(0, -1, 1) and choice[1][0]==0 and False):
+            print("choice 0: {}, type: {}".format(choice[0], type(choice[0])))
+            print("choice 1: {}, type: {}".format(choice[1], type(choice[1])))
+            print("---------------------------------------------------------")
+        if (choice[0]==choice[1]):
+            print(choice)
+            exit()
         # choice[0] is original position of piece, index is index of piece in node tuple
         index = state.index(choice[0])
         # if piece not leaving board
-        if choice[1] is not None and choice[0] != choice[1]:
+        if choice[1] is not None:
             # choice[1] is new position of the piece, next_node is the new state
             next_state = state[:index] + (choice[1],) + state[index+1:]
         else:
             next_state = state[:index] + state[index+1:]
 
+        ###print(choice)
         stringified_next = Formatting.tuple_to_string(next_state)
         if stringified_next not in explored_states:
             h = heuristic(coords=next_state, goal=goal)

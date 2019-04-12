@@ -14,6 +14,7 @@ from util import dprint
 
 import astar
 import algorithmtemp
+import Formatting
 
 COLOUR_KEY = "colour"
 
@@ -43,7 +44,7 @@ def main():
     
         temp_path = algorithmtemp.get_next_move(board.get_pieces(True), board.get_col_coord_tuple("red"), (0,3))
         print("path found! : {}".format(temp_path))
-        coords = output.determine_move(board.get_col_coord_tuple("red"), temp_path)
+        coords = output.determine_move(board.get_col_coord_tuple("red"), Formatting.string_to_tuple(temp_path))
         board.update_piece(coords)
         print_board(board.get_board(), debug=True)
         print(board.get_pieces(True))

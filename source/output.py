@@ -74,6 +74,13 @@ def det_move(coords):
 
 # from the change in coordinates, determines if the move is a jump, move, or exit
 def determine_move(init_coords, end_coords):
+    if init_coords==end_coords:
+        print("ERROR, coords are equal! {}={}".format(init_coords, end_coords))
+        exit()
+    for x in init_coords:
+        for y in end_coords:
+            print("comparing {} and {}".format(x, y))
+            print(x==y)
     
     end_coords = string_to_tuple(end_coords)
    #### print(type(end_coords))
